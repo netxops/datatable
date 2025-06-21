@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	dataframe "github.com/rocketlaunchr/dataframe-go"
+	dataframe "github.com/netxops/datatable"
 
 	jutils "github.com/juju/utils/v2"
 )

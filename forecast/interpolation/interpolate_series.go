@@ -4,15 +4,16 @@ package interpolation
 
 import (
 	"context"
-	"golang.org/x/xerrors"
 	"math"
+
+	"golang.org/x/xerrors"
 
 	"github.com/DzananGanic/numericalgo/interpolate"
 	"github.com/DzananGanic/numericalgo/interpolate/lagrange"
 	"github.com/cnkei/gospline"
 
-	dataframe "github.com/rocketlaunchr/dataframe-go"
-	"github.com/rocketlaunchr/dataframe-go/utils"
+	dataframe "github.com/netxops/datatable"
+	"github.com/netxops/datatable/utils"
 )
 
 func interpolateSeriesFloat64(ctx context.Context, fs *dataframe.SeriesFloat64, opts InterpolateOptions) (*dataframe.OrderedMapIntFloat64, error) {

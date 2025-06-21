@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/rocketlaunchr/dataframe-go"
+	dataframe "github.com/netxops/datatable"
 )
 
 func TestInterpolateSeriesForwardFillFwd(t *testing.T) {

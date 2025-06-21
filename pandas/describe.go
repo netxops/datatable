@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strconv"
 
-	dataframe "github.com/rocketlaunchr/dataframe-go"
+	dataframe "github.com/netxops/datatable"
 )
 
 // DescribeOutput contains statistical data for a DataFrame or Series.

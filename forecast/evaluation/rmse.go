@@ -6,7 +6,7 @@ import (
 	"context"
 	"math"
 
-	"github.com/rocketlaunchr/dataframe-go/forecast"
+	"github.com/netxops/datatable/forecast"
 )
 
 // RootMeanSquaredError represents the root mean squared error.

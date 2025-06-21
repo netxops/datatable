@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"io"
 
-	dataframe "github.com/rocketlaunchr/dataframe-go"
+	dataframe "github.com/netxops/datatable"
 )
 
 // JSONExportOptions contains options for ExportToJSON function.
