@@ -84,6 +84,34 @@ func NewSeriesGeneric(name string, concreteType interface{}, init *SeriesInit, v
 	return s
 }
 
+// NewSeries creates a new initialized SeriesGeneric of the same type.
+func (s *SeriesGeneric) NewSeries(name string, init *SeriesInit) Series {
+	// 创建一个新的 SeriesGeneric
+	newSeries := &SeriesGeneric{
+		valFormatter:   s.valFormatter,
+		isEqualFunc:    s.isEqualFunc,
+		isLessThanFunc: s.isLessThanFunc,
+		concreteType:   s.concreteType,
+		name:           name,
+	}
+
+	// 如果 init 不为 nil，则根据 init 初始化 values 切片
+	if init != nil {
+		size := init.Size
+		capacity := init.Capacity
+		if capacity < size {
+			capacity = size
+		}
+		newSeries.values = make([]interface{}, size, capacity)
+		newSeries.nilCount = size // 初始时所有值都为 nil
+	} else {
+		newSeries.values = []interface{}{}
+		newSeries.nilCount = 0
+	}
+
+	return newSeries
+}
+
 // Name returns the series name.
 func (s *SeriesGeneric) Name(opts ...Options) string {
 	if len(opts) == 0 || !opts[0].DontLock {
