@@ -6,10 +6,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"golang.org/x/exp/rand"
 	"sort"
 	"strconv"
 	"sync"
+
+	"golang.org/x/exp/rand"
 
 	"github.com/guptarohit/asciigraph"
 	"github.com/olekukonko/tablewriter"
@@ -544,35 +545,73 @@ func (s *SeriesFloat64) Unlock() {
 // Copy will create a new copy of the series.
 // It is recommended that you lock the Series before attempting
 // to Copy.
-func (s *SeriesFloat64) Copy(r ...Range) Series {
+// func (s *SeriesFloat64) Copy(r ...Range) Series {
 
+// 	if len(s.Values) == 0 {
+// 		return &SeriesFloat64{
+// 			valFormatter: s.valFormatter,
+// 			name:         s.name,
+// 			Values:       []float64{},
+// 			nilCount:     s.nilCount,
+// 		}
+// 	}
+
+// 	if len(r) == 0 {
+// 		r = append(r, Range{})
+// 	}
+
+// 	start, end, err := r[0].Limits(len(s.Values))
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	// Copy slice
+// 	x := s.Values[start : end+1]
+// 	newSlice := append(x[:0:0], x...)
+
+//		return &SeriesFloat64{
+//			valFormatter: s.valFormatter,
+//			name:         s.name,
+//			Values:       newSlice,
+//			nilCount:     s.nilCount,
+//		}
+//	}
+func (s *SeriesFloat64) Copy(ranges ...Range) Series {
 	if len(s.Values) == 0 {
 		return &SeriesFloat64{
 			valFormatter: s.valFormatter,
 			name:         s.name,
 			Values:       []float64{},
-			nilCount:     s.nilCount,
+			nilCount:     0,
 		}
 	}
 
-	if len(r) == 0 {
-		r = append(r, Range{})
+	var newValues []float64
+	var newNilCount int
+
+	if len(ranges) == 0 {
+		ranges = append(ranges, Range{})
 	}
 
-	start, end, err := r[0].Limits(len(s.Values))
-	if err != nil {
-		panic(err)
-	}
+	for _, r := range ranges {
+		start, end, err := r.Limits(len(s.Values))
+		if err != nil {
+			panic(err)
+		}
 
-	// Copy slice
-	x := s.Values[start : end+1]
-	newSlice := append(x[:0:0], x...)
+		for i := start; i <= end; i++ {
+			newValues = append(newValues, s.Values[i])
+			if isNaN(s.Values[i]) {
+				newNilCount++
+			}
+		}
+	}
 
 	return &SeriesFloat64{
 		valFormatter: s.valFormatter,
 		name:         s.name,
-		Values:       newSlice,
-		nilCount:     s.nilCount,
+		Values:       newValues,
+		nilCount:     newNilCount,
 	}
 }
 

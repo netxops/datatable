@@ -490,45 +490,89 @@ func (s *SeriesGeneric) Unlock() {
 // Copy will create a new copy of the series.
 // It is recommended that you lock the Series before attempting
 // to Copy.
-func (s *SeriesGeneric) Copy(r ...Range) Series {
+// func (s *SeriesGeneric) Copy(r ...Range) Series {
 
+// 	if len(s.values) == 0 {
+// 		return &SeriesGeneric{
+// 			valFormatter:   s.valFormatter,
+// 			isEqualFunc:    s.isEqualFunc,
+// 			isLessThanFunc: s.isLessThanFunc,
+
+// 			concreteType: s.concreteType,
+
+// 			name:     s.name,
+// 			values:   []interface{}{},
+// 			nilCount: s.nilCount,
+// 		}
+// 	}
+
+// 	if len(r) == 0 {
+// 		r = append(r, Range{})
+// 	}
+
+// 	start, end, err := r[0].Limits(len(s.values))
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	// Copy slice
+// 	x := s.values[start : end+1]
+// 	newSlice := append(x[:0:0], x...)
+
+// 	return &SeriesGeneric{
+// 		valFormatter:   s.valFormatter,
+// 		isEqualFunc:    s.isEqualFunc,
+// 		isLessThanFunc: s.isLessThanFunc,
+
+// 		concreteType: s.concreteType,
+
+//			name:     s.name,
+//			values:   newSlice,
+//			nilCount: s.nilCount,
+//		}
+//	}
+func (s *SeriesGeneric) Copy(ranges ...Range) Series {
 	if len(s.values) == 0 {
 		return &SeriesGeneric{
 			valFormatter:   s.valFormatter,
 			isEqualFunc:    s.isEqualFunc,
 			isLessThanFunc: s.isLessThanFunc,
-
-			concreteType: s.concreteType,
-
-			name:     s.name,
-			values:   []interface{}{},
-			nilCount: s.nilCount,
+			concreteType:   s.concreteType,
+			name:           s.name,
+			values:         []interface{}{},
+			nilCount:       0,
 		}
 	}
 
-	if len(r) == 0 {
-		r = append(r, Range{})
+	var newValues []interface{}
+	var newNilCount int
+
+	if len(ranges) == 0 {
+		ranges = append(ranges, Range{})
 	}
 
-	start, end, err := r[0].Limits(len(s.values))
-	if err != nil {
-		panic(err)
-	}
+	for _, r := range ranges {
+		start, end, err := r.Limits(len(s.values))
+		if err != nil {
+			panic(err)
+		}
 
-	// Copy slice
-	x := s.values[start : end+1]
-	newSlice := append(x[:0:0], x...)
+		for i := start; i <= end; i++ {
+			newValues = append(newValues, s.values[i])
+			if s.values[i] == nil {
+				newNilCount++
+			}
+		}
+	}
 
 	return &SeriesGeneric{
 		valFormatter:   s.valFormatter,
 		isEqualFunc:    s.isEqualFunc,
 		isLessThanFunc: s.isLessThanFunc,
-
-		concreteType: s.concreteType,
-
-		name:     s.name,
-		values:   newSlice,
-		nilCount: s.nilCount,
+		concreteType:   s.concreteType,
+		name:           s.name,
+		values:         newValues,
+		nilCount:       newNilCount,
 	}
 }
 
